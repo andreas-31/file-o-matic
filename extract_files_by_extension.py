@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 from __future__ import print_function
 import os
+import sys
 import re
 
 def hello():
@@ -62,8 +63,26 @@ class Files():
 
 
 def main():
-    mypath = '/mnt/OS'
-    #mypath = '.'
+    # read command line arguments
+    if len(sys.argv) != 2:
+        print('Usage: {} directory'.format(sys.argv[0]))
+        exit(1)
+
+    mypath = sys.argv[1] #e.g. '/mnt/OS'
+    # exit if mypath is not readable
+    if not os.path.exists(mypath):
+        print('Directory "{}" does not exist. Exiting...'.format(mypath))
+        exit(2)
+    # exit if mypath is not readable
+    if not os.access(mypath, os.R_OK):
+        print('Directory "{}" is not readable (no permission). Exiting...'.format(mypath))
+        exit(3)
+    # exit if mypath is not a directory
+    if not os.path.isdir(mypath):
+        print('Directory "{}" is not a directory. Exiting...'.format(mypath))
+        exit(4)
+
+    # parse contents of directory
     myFiles = Files(mypath)
     #print(myFiles)
     print(myFiles.str_ifiles())
